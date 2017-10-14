@@ -21,13 +21,15 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.0.0'
-    compile 'com.google.android.gms:play-services-ads:9.8.0'
-
     compile project(':jokelibrary')
     compile project(':jokeandroidlibrary')
+    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.google.android.gms:play-services-ads:9.8.0'
+    compile 'com.google.code.findbugs:jsr305:2.0.1'
+    compile project(path: ':jokesbackend', configuration: 'android-endpoints')
+    compile 'com.google.api-client:google-api-client-android:1.23.0'
 }

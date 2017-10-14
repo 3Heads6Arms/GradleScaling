@@ -4,23 +4,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
-
-import com.anhhoang.jokeandroidlibrary.JokeActivity;
-import com.jokes.JokeGenerator;
 
 
 public class MainActivity extends AppCompatActivity {
-
-    private JokeGenerator jokeGenerator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        jokeGenerator = new JokeGenerator();
     }
 
 
@@ -45,10 +36,4 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    public void tellJoke(View view) {
-        startActivity(JokeActivity.getStartingIntent(this, jokeGenerator.getRandomJoke()));
-    }
-
-
 }
