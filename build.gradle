@@ -17,3 +17,37 @@ allprojects {
         jcenter()
     }
 }
+
+task launchGCE {
+    dependsOn ':jokesbackend:appengineRun'
+    project(':jokesbackend').afterEvaluate {
+        x -> x.extensions.appengine.daemon = true
+    }
+
+    doLast {
+        println 'Server started!'
+    }
+}
+
+task launchTests {
+    dependsOn = [launchGCE, ':app:connectedCheck']
+    mustRunAfter launchGCE
+
+    doLast {
+        println 'Tested all tests'
+    }
+}
+
+task stopGCE {
+    dependsOn = [launchTests, ':jokesbackend:appengineStop']
+    mustRunAfter launchTests
+
+    doLast {
+        println 'Closed server'
+    }
+}
+
+task runOptionalTask {
+    dependsOn stopGCE
+}
+
