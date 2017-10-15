@@ -27,7 +27,7 @@ public class JokeAsyncTaskTest {
         try {
             result = asyncTask.execute().get();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            Assert.fail();
         }
 
         Assert.assertNotNull(result);
