@@ -3,6 +3,7 @@ package com.udacity.gradle.builditbigger;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +12,10 @@ import android.widget.ProgressBar;
 
 import com.anh.hoang.myapplication.backend.jokesApi.JokesApi;
 import com.anhhoang.jokeandroidlibrary.JokeActivity;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
@@ -62,6 +65,7 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
 
         private WeakReference<ProgressBar> progressBarRef;
         private WeakReference<Context> contextRef;
+        private InterstitialAd interstitialAd;
 
         public JokeAsyncTask(Context context, ProgressBar progressBar) {
             contextRef = new WeakReference<>(context);
@@ -72,6 +76,12 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
         protected void onPreExecute() {
             if (progressBarRef.get() != null) {
                 progressBarRef.get().setVisibility(View.VISIBLE);
+            }
+
+            Context context = contextRef.get();
+            if (context != null) {
+                interstitialAd = new InterstitialAd(context);
+                interstitialAd.setAdUnitId(context.getString(R.string.banner_ad_unit_id));
             }
         }
 
@@ -92,13 +102,25 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
         }
 
         @Override
-        protected void onPostExecute(String jokeResult) {
+        protected void onPostExecute(final String jokeResult) {
             if (progressBarRef.get() != null) {
                 progressBarRef.get().setVisibility(View.INVISIBLE);
             }
-            if (contextRef.get() != null && jokeResult != null) {
-                Context context = contextRef.get();
-                context.startActivity(JokeActivity.getStartingIntent(context, jokeResult));
+            final Context context = contextRef.get();
+            if (context != null && jokeResult != null) {
+
+                interstitialAd.setAdListener(new AdListener() {
+                    @Override
+                    public void onAdLoaded() {
+                        interstitialAd.show();
+                    }
+
+                    @Override
+                    public void onAdClosed() {
+                        context.startActivity(JokeActivity.getStartingIntent(context, jokeResult));
+                    }
+                });
+                interstitialAd.loadAd(new AdRequest.Builder().build());
             }
         }
     }
